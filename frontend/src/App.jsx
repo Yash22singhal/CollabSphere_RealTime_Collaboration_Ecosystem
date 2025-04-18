@@ -1,21 +1,32 @@
-import React from 'react'
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import Home from './Pages/Home/Home';
-import Navbar from './components/Navbar/Navbar';
-import Footer from './components/Footer/Footer';
-import SignUp from './components/SignUp';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Signup from './components/Signup';
+// import DocumentEditor from './components/DocumentEditor';
+import Dashboard from './components/Dashboard'; // Import the Dashboard component
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import QuillNewEditor from './components/QuillNewEditor';
+import DocumentDetails from './components/DocumentDetails';
+//import TiptapEditor from './components/TipTapEditor';
 
-const App = () => {
+
+function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
-  )
+    <>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/documents/:id" element={<DocumentDetails />} />
+          <Route path="documents/:id/edit" element={<QuillNewEditor />} />
+        </Routes>
+        <Footer />
+        {/* <TiptapEditor /> */}
+        {/* <QuillNewEditor /> */}
+    </>
+  );
 }
 
-export default App
+export default App;
