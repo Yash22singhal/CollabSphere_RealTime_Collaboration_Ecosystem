@@ -1,6 +1,6 @@
 {
     "version" : 2,
-    "name" : "CollabSphere_Backend",
+    "name" : "CollabSphereBackend",
     "builds" : [
         {
             "src" : "./server.js",
