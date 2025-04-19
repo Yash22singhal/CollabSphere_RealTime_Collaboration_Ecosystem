@@ -5,7 +5,7 @@ import Signup from './components/SignUp';
 import Dashboard from './components/Dashboard'; // Import the Dashboard component
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
+import Home from './Pages/Home';
 import QuillNewEditor from './components/QuillNewEditor';
 import DocumentDetails from './components/DocumentDetails';
 //import TiptapEditor from './components/TipTapEditor';
