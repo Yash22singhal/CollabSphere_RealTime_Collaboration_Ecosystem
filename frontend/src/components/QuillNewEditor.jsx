@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useParams, useNavigate } from "react-router-dom";
@@ -12,9 +18,10 @@ const DEBOUNCE_DELAY = 100;
 const THROTTLE_INTERVAL = 200;
 
 function QuillNewEditor() {
-  const {url} = useContext(AppContext);
+  const { url } = useContext(AppContext);
   const { id: documentId } = useParams();
-  const [content, setContent] = useState({ ops: [{ insert: "\n" }] });
+  //const [content, setContent] = useState({ ops: [{ insert: "\n" }] });
+  const [content, setContent] = useState("");
   const quillRef = useRef(null);
   const socketRef = useRef(null);
   const navigate = useNavigate();
@@ -26,38 +33,44 @@ function QuillNewEditor() {
   //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   // --- Helper function to save the document ---
-  const saveDocument = useCallback(async (contentToSave) => {
-    if (!documentId) return;
-    setIsSaving(true); // set saving to true before the save starts
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.warn("Token not found.  Not saving.");
+  const saveDocument = useCallback(
+    async (contentToSave) => {
+      if (!documentId) return;
+      setIsSaving(true);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.warn("Token not found.  Not saving.");
+          setIsSaving(false);
+          return;
+        }
+
+        const response = await fetch(`${url}/api/documents/${documentId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ content: contentToSave }), // Send the HTML content
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error(
+            "Failed to save document:",
+            errorData.message || "Unknown error"
+          );
+        } else {
+          console.log("Document saved successfully.");
+        }
+      } catch (error) {
+        console.error("Error saving document:", error);
+      } finally {
         setIsSaving(false);
-        return;
       }
-
-      const response = await fetch(`${url}/api/documents/${documentId}`, {
-        method: "PUT", // Use PUT to update the entire document
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ content: contentToSave }), // Send the entire content
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to save document:", errorData.message || "Unknown error");
-      } else {
-        console.log("Document saved successfully.");
-      }
-    } catch (error) {
-      console.error("Error saving document:", error);
-    } finally {
-      setIsSaving(false); // Set saving to false after the save is completed
-    }
-  }, [documentId, url]);
+    },
+    [documentId, url]
+  );
 
   const handleTextSelection = useCallback(() => {
     if (quillRef.current) {
@@ -117,7 +130,7 @@ function QuillNewEditor() {
     }
 
     socketRef.current.on("receive-changes", (remoteUserId, delta) => {
-      console.log(`Received changes from ${remoteUserId}:`, delta);
+      //console.log(`Received changes from ${remoteUserId}:`, delta);
       if (quillRef.current) {
         quillRef.current.getEditor().updateContents(delta);
       }
@@ -240,25 +253,23 @@ function QuillNewEditor() {
     },
   };
 
-
   // --- Auto-save effect ---
   useEffect(() => {
     let saveInterval;
 
     if (documentId) {
       saveInterval = setInterval(() => {
-        if (content && content.ops && content.ops.length > 1) {
-          saveDocument(content); // Save the current content
+        if (content) {
+          //  Check if content exists
+          saveDocument(content);
         }
       }, SAVE_INTERVAL_MS);
     }
 
     return () => {
-      clearInterval(saveInterval); // Clear the interval on unmount
+      clearInterval(saveInterval);
     };
   }, [documentId, content, saveDocument]);
-
-
 
   return (
     <div className="min-h-screen mt-10 flex bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
@@ -298,7 +309,7 @@ function QuillNewEditor() {
           {documentId && (
             <p className="text-sm text-right text-gray-500 mt-2 italic">
               Document ID: <span className="font-mono">{documentId}</span>
-              {isSaving && <span className="ml-4 text-blue-500">Saving...</span>}
+              {isSaving && <span className="ml-4">Saving...</span>}
             </p>
           )}
         </div>
