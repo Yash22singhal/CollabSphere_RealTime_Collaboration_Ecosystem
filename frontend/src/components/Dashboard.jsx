@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
 
 function Dashboard() {
   const [ownedDocuments, setOwnedDocuments] = useState([]);
@@ -7,7 +8,8 @@ function Dashboard() {
   const [newDocumentTitle, setNewDocumentTitle] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const url = "https://collabsphere-realtime-collaboration.onrender.com"
+  const {url} = useContext(AppContext);
+  //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
     const fetchDocuments = async () => {

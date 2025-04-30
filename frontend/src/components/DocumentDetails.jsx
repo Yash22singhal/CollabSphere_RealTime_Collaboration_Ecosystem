@@ -218,8 +218,9 @@
 
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 function DocumentDetails() {
   const { id: documentId } = useParams();
@@ -229,7 +230,8 @@ function DocumentDetails() {
   const [searchResults, setSearchResults] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
-  const url = "https://collabsphere-realtime-collaboration.onrender.com"
+  const {url} = useContext(AppContext);
+  //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {

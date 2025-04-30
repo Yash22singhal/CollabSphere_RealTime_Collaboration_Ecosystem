@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { debounce, throttle } from "lodash";
 import AISideChat from "./AiSideChat";
+import { AppContext } from "../context/AppContext";
 
 const SAVE_INTERVAL_MS = 2000;
 const DEBOUNCE_DELAY = 100;
 const THROTTLE_INTERVAL = 200;
 
 function QuillNewEditor() {
+  const {url} = useContext(AppContext);
   const { id: documentId } = useParams();
   const [content, setContent] = useState({ ops: [{ insert: "\n" }] });
   const quillRef = useRef(null);
@@ -19,7 +21,7 @@ function QuillNewEditor() {
   const [theme, setTheme] = useState("light");
   const [isAISideChatOpen, setIsAISideChatOpen] = useState(false);
   const [selectedText, setSelectedText] = useState("");
-  const url = "https://collabsphere-realtime-collaboration.onrender.com"
+  //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   const handleTextSelection = useCallback(() => {
     if (quillRef.current) {

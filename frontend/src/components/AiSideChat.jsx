@@ -118,13 +118,15 @@
 
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 
 function AISideChat({ selectedText, onApply }) {
   const [activeTab, setActiveTab] = useState('summarize');
   const [aiResponse, setAiResponse] = useState('');
   const [loading, setLoading] = useState(false);
-  const url = "https://collabsphere-realtime-collaboration.onrender.com"
+  const {url} = useContext(AppContext);
+  //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
     // Reset response when selectedText changes
