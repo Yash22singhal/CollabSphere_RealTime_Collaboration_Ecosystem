@@ -13,7 +13,7 @@ import { debounce, throttle } from "lodash";
 import AISideChat from "./AiSideChat";
 import { AppContext } from "../context/AppContext";
 
-const SAVE_INTERVAL_MS = 5000;
+const SAVE_INTERVAL_MS = 3000;
 const DEBOUNCE_DELAY = 100;
 const THROTTLE_INTERVAL = 200;
 
@@ -271,6 +271,37 @@ function QuillNewEditor() {
     };
   }, [documentId, content, saveDocument]);
 
+  // --- Save before unload ---
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (content) {
+        event.preventDefault();
+        event.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+        saveDocument(content).then(() => {
+          window.removeEventListener("beforeunload", handleBeforeUnload);
+           // No navigation here, just allow unload
+        });
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [content, saveDocument]);
+
+  const handleNavigate = (path) => {
+    if (content && !isSaving) {
+      saveDocument(content).then(() => {
+        navigate(path);
+      });
+    } else {
+      navigate(path);
+    }
+  };
+
+
   return (
     <div className="min-h-screen mt-10 flex bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
       <div className="relative w-full flex">
@@ -281,8 +312,8 @@ function QuillNewEditor() {
           {/* Editor takes up most of the space */}
           <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
             <div className="flex justify-between items-center mb-4">
-              <button
-                onClick={() => navigate("/dashboard")}
+            <button
+                onClick={() => handleNavigate("/dashboard")}
                 className={themeClasses[theme].closeButton}
               >
                 ⬅ Back to Dashboard
