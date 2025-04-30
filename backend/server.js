@@ -30,11 +30,13 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ['collabspherefrontend.vercel.app',
+    origin: ['https://collabspherefrontend.vercel.app',
       "http://localhost:5173",
       "https://collabsphere-realtime-collaboration.onrender.com"
     ],
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    allowedHeaders: ["Authorization", "Content-Type"], // Allow specific headers
+    credentials: true, // If you need to send cookies
   }
 });
 
