@@ -124,6 +124,7 @@ function AISideChat({ selectedText, onApply }) {
   const [activeTab, setActiveTab] = useState('summarize');
   const [aiResponse, setAiResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
     // Reset response when selectedText changes
@@ -147,7 +148,7 @@ function AISideChat({ selectedText, onApply }) {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/ai/process', { // Replace with your actual backend endpoint
+      const response = await fetch(`${url}/api/ai/process`, { // Replace with your actual backend endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ function Dashboard() {
   const [newDocumentTitle, setNewDocumentTitle] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -14,14 +15,23 @@ function Dashboard() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
+        // const [ownedRes, collabRes] = await Promise.all([
+        //   fetch('http://localhost:5000/api/documents/user/documents', {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   }),
+        //   fetch('http://localhost:5000/api/documents/user/collaborations', {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   }),
+        // ]);
+
         const [ownedRes, collabRes] = await Promise.all([
-          fetch('http://localhost:5000/api/documents/user/documents', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch('http://localhost:5000/api/documents/user/collaborations', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
+            fetch(`${url}/api/documents/user/documents`, {
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+            fetch(`${url}/api/documents/user/collaborations`, {
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+          ]);
 
         const ownedData = ownedRes.ok ? await ownedRes.json() : null;
         const collabData = collabRes.ok ? await collabRes.json() : null;
@@ -55,7 +65,7 @@ function Dashboard() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch('http://localhost:5000/api/documents/', {
+      const response = await fetch(`${url}/api/documents/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +96,7 @@ function Dashboard() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch(`http://localhost:5000/api/documents/${documentId}`, {
+      const response = await fetch(`${url}/api/documents/${documentId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -71,7 +71,7 @@ function TiptapEditor() {
   });
 
   useEffect(() => {
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io(url);
     setSocket(newSocket);
 
     return () => {

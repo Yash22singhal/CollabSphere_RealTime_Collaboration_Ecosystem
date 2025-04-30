@@ -19,6 +19,7 @@ function QuillNewEditor() {
   const [theme, setTheme] = useState("light");
   const [isAISideChatOpen, setIsAISideChatOpen] = useState(false);
   const [selectedText, setSelectedText] = useState("");
+  const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   const handleTextSelection = useCallback(() => {
     if (quillRef.current) {
@@ -65,7 +66,7 @@ function QuillNewEditor() {
   useEffect(() => {
     if (!socketRef.current) {
       const token = localStorage.getItem("token");
-      const socket = io("http://localhost:5000", {
+      const socket = io(url, {
         query: { token: token },
       });
       socketRef.current = socket;

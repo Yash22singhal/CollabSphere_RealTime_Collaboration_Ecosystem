@@ -229,6 +229,7 @@ function DocumentDetails() {
   const [searchResults, setSearchResults] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
+  const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
     const fetchDocumentDetails = async () => {
@@ -237,7 +238,7 @@ function DocumentDetails() {
         if (!token) return navigate("/login");
 
         const res = await fetch(
-          `http://localhost:5000/api/documents/${documentId}`,
+          `${url}/api/documents/${documentId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -267,7 +268,7 @@ function DocumentDetails() {
       if (!token) return;
 
       const res = await fetch(
-        `http://localhost:5000/api/auth/users/search?query=${newCollaboratorEmail}`,
+        `${url}/api/auth/users/search?query=${newCollaboratorEmail}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -291,7 +292,7 @@ function DocumentDetails() {
       if (!token) return;
 
       const res = await fetch(
-        `http://localhost:5000/api/documents/${documentId}/share`,
+       `${url}/api/documents/${documentId}/share`,
         {
           method: "PUT",
           headers: {
@@ -322,7 +323,7 @@ function DocumentDetails() {
       if (!token) return;
 
       const res = await fetch(
-        `http://localhost:5000/api/documents/${documentId}/share`,
+        `${url}/api/documents/${documentId}/share`,
         {
           method: "PUT",
           headers: {
