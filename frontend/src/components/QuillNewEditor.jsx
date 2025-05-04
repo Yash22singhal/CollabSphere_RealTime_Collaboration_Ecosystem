@@ -26,7 +26,7 @@ function QuillNewEditor() {
   const socketRef = useRef(null);
   const navigate = useNavigate();
   const [theme, setTheme] = useState("light");
-  const [isAISideChatOpen, setIsAISideChatOpen] = useState(false);
+  const [isAISideChatOpen, setIsAISideChatOpen] = useState(true);
   const [selectedText, setSelectedText] = useState("");
   const [isSaving, setIsSaving] = useState(false); // Add a state to track saving status
 
@@ -81,24 +81,47 @@ function QuillNewEditor() {
         setIsAISideChatOpen(true); // Open the side chat when text is selected
       } else {
         setSelectedText("");
-        setIsAISideChatOpen(false); // Close if no text is selected
+        //  setIsAISideChatOpen(false); // Close if no text is selected
       }
     }
   }, []);
 
+  // const handleApplyAIResponse = (newText) => {
+  //   if (quillRef.current && selectedText) {
+  //     const editor = quillRef.current?.getEditor();
+  //     const range = editor.getSelection();
+  //     if (range) {
+  //       editor.replaceText(range.index, range.length, newText);
+  //     } else {
+  //       editor.insertText(editor.getLength() - 1, newText); // If no selection, insert at the end
+  //     }
+  //   }
+  //   //setIsAISideChatOpen(false); // Close the side chat after applying
+  //   setSelectedText("");
+  // };
+
   const handleApplyAIResponse = (newText) => {
-    if (quillRef.current && selectedText) {
-      const editor = quillRef.current.getEditor();
-      const range = editor.getSelection();
-      if (range) {
-        editor.replaceText(range.index, range.length, newText);
-      } else {
-        editor.insertText(editor.getLength() - 1, newText); // If no selection, insert at the end
-      }
+    if (!quillRef.current || !selectedText) return;
+  
+    const editor = quillRef.current.getEditor?.();
+    if (!editor || typeof editor.insertText !== 'function') {
+      console.error('Quill editor instance not found or insertText is not a function');
+      return;
     }
-    setIsAISideChatOpen(false); // Close the side chat after applying
-    setSelectedText("");
+  
+    const range = editor.getSelection();
+    if (range) {
+      editor.deleteText(range.index, range.length); // Remove selected text
+      editor.insertText(range.index, newText);      // Insert new text at same position
+    } else {
+      editor.insertText(editor.getLength() - 1, newText); // Append at end
+    }
+  
+    setSelectedText('');
   };
+  
+
+  
 
   useEffect(() => {
     if (quillRef.current) {
@@ -126,7 +149,7 @@ function QuillNewEditor() {
     if (documentId) {
       const userId = localStorage.getItem("userId") || "guest";
       socketRef.current.emit("join-document", documentId, userId);
-      console.log(`Joined document room: ${documentId} as user: ${userId}`);
+      //console.log(`Joined document room: ${documentId} as user: ${userId}`);
     }
 
     socketRef.current.on("receive-changes", (remoteUserId, delta) => {
@@ -348,6 +371,7 @@ function QuillNewEditor() {
           <AISideChat
             selectedText={selectedText}
             onApply={handleApplyAIResponse}
+            setIsAISideChatOpen={setIsAISideChatOpen}
           />
         )}
       </div>

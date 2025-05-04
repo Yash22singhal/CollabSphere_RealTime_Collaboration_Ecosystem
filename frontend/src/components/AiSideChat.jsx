@@ -121,11 +121,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
-function AISideChat({ selectedText, onApply }) {
+function AISideChat({ selectedText, onApply, setIsAISideChatOpen }) {
   const [activeTab, setActiveTab] = useState('summarize');
   const [aiResponse, setAiResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const {url} = useContext(AppContext);
+  const [inputValue, setInputValue] = useState('')
   //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
@@ -134,9 +135,16 @@ function AISideChat({ selectedText, onApply }) {
   }, [selectedText]);
 
   const handleAiAction = async (action) => {
-    if (!selectedText) {
+    let searchData = '';
+    if (!selectedText && inputValue=='') {
       setAiResponse('Please select text in the editor first.');
       return;
+    }
+    else if (inputValue != ''){
+      searchData = inputValue;
+    }
+    else{
+      searchData = selectedText;
     }
 
     setLoading(true);
@@ -158,7 +166,7 @@ function AISideChat({ selectedText, onApply }) {
         },
         body: JSON.stringify({
           action: action,
-          text: selectedText,
+          text: searchData,
         }),
       });
 
@@ -183,12 +191,20 @@ function AISideChat({ selectedText, onApply }) {
     }
   };
 
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value)
+  }
+
   return (
     <div className="bg-white shadow-md rounded-md p-4 w-64">
-      <h2 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">AI Assistant</h2>
+      <div className='flex justify-between'>
+        <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-900">AI Assistant</h2>
+        <h2 className='cursor-pointer' onClick={()=>setIsAISideChatOpen(false)}>X</h2>
+      </div>
       <div className="mb-4">
-        <p className="text-sm text-gray-500 dark:text-gray-400">Selected Text:</p>
-        <p className="text-gray-800 italic dark:text-gray-300">{selectedText || 'No text selected'}</p>
+        <p className="text-sm text-gray-700 dark:text-gray-700">Selected Text:</p>
+        <input type="text" name="text" id="text" value={selectedText ? selectedText : inputValue} onChange={handleInputChange} className='border border-gray-500 w-full' />
+        {/* <p className="text-gray-800 italic dark:text-gray-300">{selectedText || 'No text selected'}</p> */}
       </div>
 
       <div className="flex space-x-2 mb-2">
@@ -212,6 +228,16 @@ function AISideChat({ selectedText, onApply }) {
         >
           Suggest
         </button>
+        <button
+          onClick={() => setActiveTab('chat')}
+          className={`px-3 py-1 rounded-md text-sm ${
+            activeTab === 'chat'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-blue-300 dark:hover:bg-blue-700 transition'
+          }`}
+        >
+          Chat
+        </button>
         {/* Add more tabs as needed */}
       </div>
 
@@ -225,7 +251,7 @@ function AISideChat({ selectedText, onApply }) {
         </button>
       </div>
 
-      <div className="flex-grow overflow-auto">
+      <div className="flex-grow max-h-64 overflow-auto">
         <p className="text-gray-900 dark:text-gray-900">{aiResponse}</p>
       </div>
 

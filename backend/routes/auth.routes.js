@@ -92,6 +92,22 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get('/user/:id', auth, async (req, res) => {
+
+  try{
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({message: "User not found"});
+    }
+
+    res.status(200).json(user)
+  } catch(error){
+    console.log('Error fetching user', error);
+    res.status(500).json({message: 'Failed to fetch User'});
+  }
+});
+
 router.get('/users/search', auth, async (req, res) => {
   try {
     const { query } = req.query; // Get the search query from the URL

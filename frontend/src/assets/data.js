@@ -1,3 +1,12 @@
+import user_icon from './images/user-icon.png';
+import doc_icon from './images/doc-icon.png';
+
+export const assets = {
+  user_icon,
+  doc_icon,
+}
+
+
 // demoSteps data
 export const demoSteps = [
     {

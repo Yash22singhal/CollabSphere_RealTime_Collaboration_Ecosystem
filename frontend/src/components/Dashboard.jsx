@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import DocumentCard from './DocumentCard';
+import {assets} from '../assets/data';
 
 function Dashboard() {
   const [ownedDocuments, setOwnedDocuments] = useState([]);
@@ -8,7 +12,7 @@ function Dashboard() {
   const [newDocumentTitle, setNewDocumentTitle] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const {url} = useContext(AppContext);
+  const {url, token, user} = useContext(AppContext);
   //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
@@ -16,15 +20,6 @@ function Dashboard() {
       try {
         const token = localStorage.getItem('token');
         if (!token) return;
-
-        // const [ownedRes, collabRes] = await Promise.all([
-        //   fetch('http://localhost:5000/api/documents/user/documents', {
-        //     headers: { Authorization: `Bearer ${token}` },
-        //   }),
-        //   fetch('http://localhost:5000/api/documents/user/collaborations', {
-        //     headers: { Authorization: `Bearer ${token}` },
-        //   }),
-        // ]);
 
         const [ownedRes, collabRes] = await Promise.all([
             fetch(`${url}/api/documents/user/documents`, {
@@ -91,44 +86,30 @@ function Dashboard() {
     }
   };
 
-  const handleDeleteDocument = async (documentId) => {
-    setError('');
-    setMessage('');
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const response = await fetch(`${url}/api/documents/${documentId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setOwnedDocuments(ownedDocuments.filter((doc) => doc._id !== documentId));
-        setMessage('Document deleted successfully!');
-      } else {
-        setError(data.message || 'Failed to delete document.');
-      }
-    } catch (err) {
-      console.error(err);
-      setError('An unexpected error occurred while deleting the document.');
-    }
-  };
+  
 
 
   return (
-    <div className="min-h-screen mt-10 bg-gradient-to-br from-[#f7f8fc] to-[#e3e9f0] dark:from-[#1a1c1f] dark:to-[#2a2e35] transition-all duration-500">
-      <div className="max-w-4xl mx-auto py-14 px-6">
-        <div className="bg-white dark:bg-[#2d2f33] shadow-2xl rounded-3xl p-8 transition-all duration-300">
+    //<div className="min-h-screen mt-10 bg-gradient-to-br from-[#f7f8fc] to-[#e3e9f0] dark:from-[#1a1c1f] dark:to-[#2a2e35] transition-all duration-500">
+    <div className="min-h-screen mt-10 transition-all duration-500 bg-gradient-to-b from-[#2E8BC0] to-gray-900">
+      <div className="max-w-4xl mx-auto pt-14 pb-5 px-6">
+        <div className='flex gap-10 items-center pb-10'>
+          {user.avatar ? 
+            <img src='/profile-pic.jpg' alt="" className='w-2xs rounded-full' />  :
+            <img src={assets.user_icon} alt="" className='rounded-full max-w-[150px]'/>
+          }
+          <div className=''>
+            <h1 className='text-2xl font-bold uppercase text-gray-50'>{user.username}</h1>
+            <p className='text-gray-200'>{user.email}</p>
+          </div>
+        </div>
+        <div className=" p-5 transition-all duration-300">
           <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">📂 My Documents</h2>
 
           {error && <div className="text-red-500 bg-red-100 dark:bg-red-800 p-3 rounded-md mb-4">{error}</div>}
           {message && <div className="text-green-600 bg-green-100 dark:bg-green-700 p-3 rounded-md mb-4">{message}</div>}
 
+          {/* create document */}
           <div className="flex gap-3 mb-6">
             <input
               type="text"
@@ -145,46 +126,49 @@ function Dashboard() {
             </button>
           </div>
 
+          {/* Owned Documents */}
           {ownedDocuments.length > 0 && (
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-gray-700 dark:text-white mb-2">📘 Owned Documents</h3>
-              <ul className="space-y-2">
+              <div className="grid grid-cols-2 gap-8">
                 {ownedDocuments.map((doc) => (
-                  <li key={doc._id} className="bg-gray-100 dark:bg-[#383b40] px-4 py-3 rounded-lg shadow hover:shadow-md transition flex justify-between items-center">
-                    <div>
-                      <Link to={`/documents/${doc._id}`} className="text-blue-600 hover:underline dark:text-blue-400">
-                        {doc.title || 'Untitled Document'}
-                      </Link>
-                      <span className="text-sm text-gray-500 ml-2">(Owner)</span>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteDocument(doc._id)}
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline text-xs"
-                    >
-                      Delete
-                    </button>
-                  </li>
+                  <DocumentCard doc={doc} key={doc._id} setError={setError} setMessage={setMessage} setOwnedDocuments={setOwnedDocuments} ownedDocuments={ownedDocuments} />
+                  // <li key={doc._id} className="bg-gray-100 dark:bg-[#383b40] px-4 py-3 rounded-lg shadow hover:shadow-md transition flex justify-between items-center">
+                  //   <div>
+                  //     <Link to={`/documents/${doc._id}`} className="text-blue-600 hover:underline dark:text-blue-400">
+                  //       {doc.title || 'Untitled Document'}
+                  //     </Link>
+                  //     <span className="text-sm text-gray-500 ml-2">(Owner)</span>
+                  //   </div>
+                  //   <button
+                  //     onClick={() => handleDeleteDocument(doc._id)}
+                  //     className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline text-xs"
+                  //   >
+                  //     Delete
+                  //   </button>
+                  // </li>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
 
           {collaboratedDocuments.length > 0 && (
-            <div>
-              <h3 className="text-xl font-semibold text-gray-700 dark:text-white mb-2">🤝 Collaborated Documents</h3>
-              <ul className="space-y-2">
-                {collaboratedDocuments.map((doc) => (
-                  <li key={doc._id} className="bg-gray-100 dark:bg-[#383b40] px-4 py-3 rounded-lg shadow hover:shadow-md transition">
-                    <Link to={`/documents/${doc._id}`} className="text-blue-600 hover:underline dark:text-blue-400">
-                      {doc.title || 'Untitled Document'}
-                    </Link>
-                    <span className="text-sm text-gray-500 ml-2">
-                      (Shared by <span className="font-medium">{doc.owner.username}</span>)
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <DocumentCard doc={doc} key={doc._id} setError={setError} setMessage={setMessage} setOwnedDocuments={setCollaboratedDocuments} ownedDocuments={collaboratedDocuments} />
+            // <div>
+            //   <h3 className="text-xl font-semibold text-gray-700 dark:text-white mb-2">🤝 Collaborated Documents</h3>
+            //   <ul className="space-y-2">
+            //     {collaboratedDocuments.map((doc) => (
+            //       <li key={doc._id} className="bg-gray-100 dark:bg-[#383b40] px-4 py-3 rounded-lg shadow hover:shadow-md transition">
+            //         <Link to={`/documents/${doc._id}`} className="text-blue-600 hover:underline dark:text-blue-400">
+            //           {doc.title || 'Untitled Document'}
+            //         </Link>
+            //         <span className="text-sm text-gray-500 ml-2">
+            //           (Shared by <span className="font-medium">{doc.owner.username}</span>)
+            //         </span>
+            //       </li>
+            //     ))}
+            //   </ul>
+            // </div>
           )}
         </div>
       </div>

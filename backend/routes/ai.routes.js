@@ -142,6 +142,21 @@ router.post('/process', checkApiKey, async (req, res) => {
         }
         break;
 
+        case 'chat':
+          try {
+            const prompt = `${text}. Just give the plain text, no formatting and no extra words except the actual content response.`;
+            const result = await model.generateContent(prompt);
+            const suggestions = await result.response;
+            aiResponse = suggestions.text();
+            if (!aiResponse) {
+              aiResponse = 'Error genrating response.';
+            }
+          } catch (error) {
+            console.error('Gemini Suggestion Error:', error);
+            aiResponse = 'Error genrating response.';
+          }
+          break;
+
       // Add more cases for other AI actions
 
       default:
