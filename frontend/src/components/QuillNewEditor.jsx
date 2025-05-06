@@ -86,19 +86,6 @@ function QuillNewEditor() {
     }
   }, []);
 
-  // const handleApplyAIResponse = (newText) => {
-  //   if (quillRef.current && selectedText) {
-  //     const editor = quillRef.current?.getEditor();
-  //     const range = editor.getSelection();
-  //     if (range) {
-  //       editor.replaceText(range.index, range.length, newText);
-  //     } else {
-  //       editor.insertText(editor.getLength() - 1, newText); // If no selection, insert at the end
-  //     }
-  //   }
-  //   //setIsAISideChatOpen(false); // Close the side chat after applying
-  //   setSelectedText("");
-  // };
 
   const handleApplyAIResponse = (newText) => {
     if (!quillRef.current || !selectedText) return;
@@ -259,19 +246,19 @@ function QuillNewEditor() {
 
   const themeClasses = {
     light: {
-      container: "bg-[#fefefe] rounded-xl shadow-xl p-6 border border-gray-200",
+      container: "h-full bg-[#fefefe] rounded-xl shadow-xl p-6 border border-gray-200 overflow-y-auto",
       toolbar: "bg-[#f9f9f9] border-b border-gray-300",
       toolbarButton:
         "bg-white hover:bg-gray-100 text-gray-800 font-medium px-4 py-2 rounded-lg shadow-sm transition",
-      editor: "h-[500px] bg-white text-gray-900 p-4 rounded-b-xl",
+      editor: "h-screen bg-white text-gray-900 p-4 rounded-b-xl",
       closeButton: "text-gray-600 hover:text-gray-900 transition font-medium",
     },
     dark: {
-      container: "bg-[#1e1e1e] rounded-xl shadow-xl p-6 border border-gray-700",
+      container: "h-full bg-[#1e1e1e] rounded-xl shadow-xl p-6 border border-gray-700 overflow-y-auto ",
       toolbar: "bg-[#2a2a2a] border-b border-gray-600",
       toolbarButton:
         "bg-[#333] hover:bg-[#444] text-gray-100 font-medium px-4 py-2 rounded-lg shadow-sm transition",
-      editor: "h-[500px] bg-[#1e1e1e] text-gray-100 p-4 rounded-b-xl",
+      editor: "h-screen bg-[#1e1e1e] text-gray-100 p-4 rounded-b-xl",
       closeButton: "text-gray-300 hover:text-white transition font-medium",
     },
   };
@@ -326,56 +313,110 @@ function QuillNewEditor() {
 
 
   return (
-    <div className="min-h-screen mt-10 flex bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
-      <div className="relative w-full flex">
-        {" "}
-        {/* Make this a flex container */}
-        <div className="flex-1 mr-4">
-          {" "}
-          {/* Editor takes up most of the space */}
-          <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
-            <div className="flex justify-between items-center mb-4">
-            <button
-                onClick={() => handleNavigate("/dashboard")}
-                className={themeClasses[theme].closeButton}
-              >
-                ⬅ Back to Dashboard
-              </button>
-              <button
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className={themeClasses[theme].toolbarButton}
-              >
-                {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-              </button>
-            </div>
+    // <div className="min-h-screen mt-10 bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
+    //   <div className="relative w-full flex">
+    //     {" "}
+    //     {/* Make this a flex container */}
+    //     <div className="flex-1 mr-4">
+    //       {" "}
+    //       {/* Editor takes up most of the space */}
+    //       <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
+    //         <div className="flex justify-between items-center mb-4">
+    //         <button
+    //             onClick={() => handleNavigate("/dashboard")}
+    //             className={themeClasses[theme].closeButton}
+    //           >
+    //             ⬅ Back to Dashboard
+    //           </button>
+    //           <button
+    //             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+    //             className={themeClasses[theme].toolbarButton}
+    //           >
+    //             {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+    //           </button>
+    //         </div>
 
-            <ReactQuill
-              ref={quillRef}
-              theme="snow"
-              value={content}
-              onChange={handleChange}
-              modules={modules}
-              formats={formats}
-              className={`${themeClasses[theme].editor}`}
-              onSelectionChange={handleTextSelection} // Listen for selection changes
-            />
-          </div>
-          {documentId && (
-            <p className="text-sm text-right text-gray-500 mt-2 italic">
-              Document ID: <span className="font-mono">{documentId}</span>
-              {isSaving && <span className="ml-4">Saving...</span>}
-            </p>
-          )}
+    //         <ReactQuill
+    //           ref={quillRef}
+    //           theme="snow"
+    //           value={content}
+    //           onChange={handleChange}
+    //           modules={modules}
+    //           formats={formats}
+    //           className={`${themeClasses[theme].editor}`}
+    //           onSelectionChange={handleTextSelection} // Listen for selection changes
+    //         />
+    //       </div>
+    //     </div>
+    //     {isAISideChatOpen && (
+    //       <AISideChat
+    //         selectedText={selectedText}
+    //         onApply={handleApplyAIResponse}
+    //         setIsAISideChatOpen={setIsAISideChatOpen}
+    //       />
+    //     )}
+    //   </div>
+    //   {documentId && (
+    //         <p className="text-sm text-right text-gray-500 mt-2 italic">
+    //           Document ID: <span className="font-mono">{documentId}</span>
+    //           {isSaving && <span className="ml-4">Saving...</span>}
+    //         </p>
+    //       )}
+    // </div>
+
+    <div className="min-h-screen mt-10 bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
+  <div className="relative w-full flex flex-col lg:flex-row"> 
+    {/* Switch from flex-row to flex-col for mobile view */}
+    <div className="flex-1 mr-4 mb-6 lg:mb-0">
+      {/* Editor takes up most of the space */}
+      <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={() => handleNavigate("/dashboard")}
+            className={themeClasses[theme].closeButton}
+          >
+            ⬅ Back to Dashboard
+          </button>
+          <button
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            className={themeClasses[theme].toolbarButton}
+          >
+            {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+          </button>
         </div>
-        {isAISideChatOpen && (
-          <AISideChat
-            selectedText={selectedText}
-            onApply={handleApplyAIResponse}
-            setIsAISideChatOpen={setIsAISideChatOpen}
-          />
-        )}
+
+        <ReactQuill
+          ref={quillRef}
+          theme="snow"
+          value={content}
+          onChange={handleChange}
+          modules={modules}
+          formats={formats}
+          className={`${themeClasses[theme].editor}`}
+          onSelectionChange={handleTextSelection} // Listen for selection changes
+        />
       </div>
     </div>
+
+    {isAISideChatOpen && (
+      <div className="w-full lg:w-[300px] mt-6 lg:mt-0">
+        {/* Ensure the AI chat is responsive */}
+        <AISideChat
+          selectedText={selectedText}
+          onApply={handleApplyAIResponse}
+          setIsAISideChatOpen={setIsAISideChatOpen}
+        />
+      </div>
+    )}
+  </div>
+
+  {documentId && (
+    <p className="text-sm text-right text-gray-500 mt-2 italic">
+      Document ID: <span className="font-mono">{documentId}</span>
+      {isSaving && <span className="ml-4">Saving...</span>}
+    </p>
+  )}
+</div>
   );
 }
 
