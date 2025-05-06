@@ -249,7 +249,7 @@ const Navbar = () => {
           {isLoggedIn && (
             <a
               href="/dashboard"
-              className="block text-gray-700 hover:text-blue-600 flex items-center gap-1"
+              className=" text-gray-700 hover:text-blue-600 flex items-center gap-1"
             >
               <FontAwesomeIcon icon={faUser} />
               Dashboard
@@ -257,7 +257,7 @@ const Navbar = () => {
           )}
           <a
             href="/#features"
-            className="block text-gray-700 hover:text-blue-600 flex items-center gap-1"
+            className=" text-gray-700 hover:text-blue-600 flex items-center gap-1"
           >
             <FontAwesomeIcon icon={faRocket} />
             Features

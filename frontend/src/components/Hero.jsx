@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <section className="pt-28 pb-20 px-6 md:px-12 relative overflow-hidden bg-gradient-to-tr from-[#1A1A40] to-[#2E8BC0]">
-      {/* Background Image Overlay */}
+    <section className="pt-28 pb-20 px-6 md:px-12 relative overflow-hidden bg-gradient-to-tr from-[#2E8BC0] via-[#0C2D48] to-gray-900">
       <div className="absolute inset-0 z-0 bg-[url('https://readdy.ai/api/search-image?query=modern%20abstract%20technology%20background%20with%20soft%20gradient%20blue%20and%20purple%20colors&width=1440&height=800&seq=4&orientation=landscape')] bg-cover bg-center opacity-30"></div>
 
       {/* Hero Content */}
