@@ -13,3 +13,12 @@
   display: none; /* Safari and Chrome */
 }
   
+/* Global styles (in tailwind config or main.css) */
+.code-editor-container {
+  font-family: 'Fira Code', 'Source Code Pro', 'Menlo', 'Monaco', monospace;
+}
+
+/* Dynamically generated style for each user's cursor */
+.cursor-marker-USER_ID .monaco-editor-background {
+  background-color: USER_COLOR !important;
+}

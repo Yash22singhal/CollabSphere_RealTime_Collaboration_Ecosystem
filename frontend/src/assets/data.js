@@ -1,11 +1,31 @@
 import user_icon from './images/user-icon.png';
 import doc_icon from './images/doc-icon.png';
+import new_doc from './images/new-doc.png';
+import md_doc from './images/md-doc.png'
+import code_editor from './images/code-editor.png'
 
 export const assets = {
   user_icon,
   doc_icon,
+  new_doc,
+  md_doc,
+  code_editor,
 }
 
+export const docTypes = [
+  {
+    type: 'Text',
+    logo: assets.doc_icon,
+  },
+  {
+    type: 'MarkDown',
+    logo: assets.md_doc,
+  },
+  {
+    type: 'Code Editor',
+    logo: assets.code_editor,
+  }
+]
 
 // demoSteps data
 export const demoSteps = [

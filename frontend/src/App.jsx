@@ -6,8 +6,13 @@ import Dashboard from './components/Dashboard'; // Import the Dashboard componen
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './Pages/Home';
-import QuillNewEditor from './components/QuillNewEditor';
+// import QuillNewEditor from './components/QuillNewEditor';
 import DocumentDetails from './components/DocumentDetails';
+// import MarkdownTest from './components/MarkdownTest';
+// import MarkdownEditor from './components/MarkdownEditor';
+import DocumentEditorWrapper from './components/DocumentEditorWrapper';
+import CodeEditor from './components/CodeEditorDocument';
+//import CodeEditor from './components/CodeEditorTest';
 //import TiptapEditor from './components/TipTapEditor';
 
 
@@ -20,7 +25,9 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/documents/:id" element={<DocumentDetails />} />
-          <Route path="documents/:id/edit" element={<QuillNewEditor />} />
+          <Route path="documents/:id/edit" element={<DocumentEditorWrapper />} />
+          <Route path='/code-editor' element={<CodeEditor />} />
+          {/* <Route path='/markdown-doc' element={<MarkdownEditor />} /> */}
         </Routes>
         <Footer />
         {/* <TiptapEditor /> */}

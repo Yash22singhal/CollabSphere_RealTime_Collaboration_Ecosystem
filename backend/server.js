@@ -11,6 +11,7 @@ import Document from './models/document.model.js';
 import Delta from 'quill-delta'; // Import quill-delta
 import aiRoutes from './routes/ai.routes.js';
 import cronRoute from './routes/cron.routes.js';
+import codeRoute from './routes/code.routes.js'
 
 dotenv.config();
 
@@ -116,6 +117,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/', cronRoute); // Now /cron-task is available
+app.use('/api/code', codeRoute);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB Connected Successfully'))

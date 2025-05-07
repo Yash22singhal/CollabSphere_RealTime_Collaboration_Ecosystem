@@ -48,6 +48,11 @@ const documentSchema = new Schema({
     required: true,
     ref: 'User',
   },
+  type: {
+    type: String,
+    required: true,
+    default: 'Text',
+  },
   title: {
     type: String,
     required: true,

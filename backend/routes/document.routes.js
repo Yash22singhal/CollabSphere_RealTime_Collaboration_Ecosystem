@@ -7,11 +7,12 @@ const router = express.Router();
 // Create a new document (requires authentication)
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, type } = req.body;
     const newDocument = new Document({
       owner: req.user._id,
       title: title || 'Untitled Document',
-      content: content || ''
+      content: content || '',
+      type: type,
     });
     const savedDocument = await newDocument.save();
     res.status(201).json(savedDocument);

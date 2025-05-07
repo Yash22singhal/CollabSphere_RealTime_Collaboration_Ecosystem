@@ -81,8 +81,7 @@ const DocumentCard = ({
   ownedDocuments,
   isCollaboratedDoc,
 }) => {
-  const { url } = useContext(AppContext);
-
+  const { url } = useContext(AppContext); 
   const createdDate = new Date(doc.createdAt).toLocaleDateString();
 
   const handleDeleteDocument = async (documentId) => {
@@ -113,10 +112,20 @@ const DocumentCard = ({
     }
   };
 
+
   return (
     <div className="rounded-lg border border-gray-500 shadow-lg p-5 bg-black/10 backdrop-blur-sm">
       <div className="flex items-center gap-4">
-        <img src={assets.doc_icon} alt="Document Icon" className="w-16" />
+        <img src={
+          doc.type === 'Text'
+          ? assets.doc_icon 
+          : doc.type === 'MarkDown'
+          ? assets.md_doc
+          : doc.type === 'Code Editor'
+          ? assets.code_editor
+          : assets.doc_icon
+        } 
+        alt="Document Icon" className="w-16" />
         <div>
           <Link
             to={`/documents/${doc._id}`}
