@@ -5,6 +5,9 @@ import React, {
   useCallback,
   useContext,
 } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion, AnimatePresence } from "framer-motion";
+import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useParams, useNavigate } from "react-router-dom";
@@ -18,13 +21,13 @@ import { AppContext } from "../context/AppContext";
 // import DownloadContent from "./DownloadToolbar";
 import DownloadToolbar from "./DownloadContent";
 import ShareButton from "./ShareButton";
-import ScrollToTopButton from './ScrollToTopButton'
+import ScrollToTopButton from "./ScrollToTopButton";
 
 const SAVE_INTERVAL_MS = 3000;
 const DEBOUNCE_DELAY = 100;
 const THROTTLE_INTERVAL = 200;
 
-function QuillNewEditor( {doc} ) {
+function QuillNewEditor({ doc }) {
   const { url } = useContext(AppContext);
   const { id: documentId } = useParams();
   //const [content, setContent] = useState({ ops: [{ insert: "\n" }] });
@@ -36,6 +39,7 @@ function QuillNewEditor( {doc} ) {
   const [isAISideChatOpen, setIsAISideChatOpen] = useState(true);
   const [selectedText, setSelectedText] = useState("");
   const [isSaving, setIsSaving] = useState(false); // Add a state to track saving status
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
@@ -320,64 +324,8 @@ function QuillNewEditor( {doc} ) {
   };
 
   return (
-    // <div className="min-h-screen mt-10 bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
-    //   <div className="relative w-full flex">
-    //     {" "}
-    //     {/* Make this a flex container */}
-    //     <div className="flex-1 mr-4">
-    //       {" "}
-    //       {/* Editor takes up most of the space */}
-    //       <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
-    //         <div className="flex justify-between items-center mb-4">
-    //         <button
-    //             onClick={() => handleNavigate("/dashboard")}
-    //             className={themeClasses[theme].closeButton}
-    //           >
-    //             ⬅ Back to Dashboard
-    //           </button>
-    //           <button
-    //             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-    //             className={themeClasses[theme].toolbarButton}
-    //           >
-    //             {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-    //           </button>
-    //         </div>
-
-    //         <ReactQuill
-    //           ref={quillRef}
-    //           theme="snow"
-    //           value={content}
-    //           onChange={handleChange}
-    //           modules={modules}
-    //           formats={formats}
-    //           className={`${themeClasses[theme].editor}`}
-    //           onSelectionChange={handleTextSelection} // Listen for selection changes
-    //         />
-    //       </div>
-    //     </div>
-    //     {isAISideChatOpen && (
-    //       <AISideChat
-    //         selectedText={selectedText}
-    //         onApply={handleApplyAIResponse}
-    //         setIsAISideChatOpen={setIsAISideChatOpen}
-    //       />
-    //     )}
-    //   </div>
-    //   {documentId && (
-    //         <p className="text-sm text-right text-gray-500 mt-2 italic">
-    //           Document ID: <span className="font-mono">{documentId}</span>
-    //           {isSaving && <span className="ml-4">Saving...</span>}
-    //         </p>
-    //       )}
-    // </div>
-
     <div className="min-h-screen mt-10 bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
       <div className="relative w-full flex flex-col lg:flex-row">
-        {/* <DownloadToolbar editorType='quill' content={content} />  */}
-        {/* <DownloadPDFButton content={content} editorType='text' /> */}
-        {/* <DownloadCode content={content} contentType="html" /> */}
-        {/* <DownloadContent content={content} contentType="html" type='html' /> */}
-        {/* Switch from flex-row to flex-col for mobile view */}
         <div className="flex-1 mr-4 mb-6 lg:mb-0">
           {/* Editor takes up most of the space */}
           <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
@@ -388,7 +336,7 @@ function QuillNewEditor( {doc} ) {
               >
                 ⬅ Back to Dashboard
               </button>
-              <div className="flex gap-5">
+              <div className="hidden md:flex gap-5">
                 <DownloadToolbar
                   content={content}
                   type="html"
@@ -402,6 +350,86 @@ function QuillNewEditor( {doc} ) {
                   {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
                 </button>
                 <ShareButton url={window.location.href} />
+              </div>
+
+              {/* <div className="relative md:hidden">
+              
+              <button
+                className="md:hidden text-gray-600 text-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} />
+              </button>
+
+              <AnimatePresence>
+                {isMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="md:hidden bg-white z-40 border-b border-gray-200 shadow"
+                  >
+                    <div className="flex flex-col items-center justify-center px-4 py-4 space-y-3">
+                      <DownloadToolbar
+                        content={content}
+                        type="html"
+                        fileName={doc.title}
+                        className={themeClasses[theme].toolbarButton}
+                      />
+                      <button
+                        onClick={() =>
+                          setTheme(theme === "light" ? "dark" : "light")
+                        }
+                        className={themeClasses[theme].toolbarButton}
+                      >
+                        {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+                      </button>
+                      <ShareButton url={window.location.href} />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              </div> */}
+
+              <div className="relative md:hidden">
+                {/* Mobile Menu Toggle */}
+                <button
+                  className="text-gray-600 text-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-label="Toggle menu"
+                >
+                  <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} />
+                </button>
+
+                <AnimatePresence>
+                  {isMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full right-0 w-48 bg-white z-40 border border-gray-200 shadow rounded"
+                    >
+                      <div className="flex flex-col items-start px-4 py-4 space-y-3">
+                        <DownloadToolbar
+                          content={content}
+                          type="html"
+                          fileName={doc.title}
+                          className={themeClasses[theme].toolbarButton}
+                        />
+                        <button
+                          onClick={() =>
+                            setTheme(theme === "light" ? "dark" : "light")
+                          }
+                          className={themeClasses[theme].toolbarButton}
+                        >
+                          {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+                        </button>
+                        <ShareButton url={window.location.href} />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
