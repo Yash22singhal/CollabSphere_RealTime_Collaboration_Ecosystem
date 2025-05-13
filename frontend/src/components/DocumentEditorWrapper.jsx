@@ -7,6 +7,7 @@ import { AppContext } from '../context/AppContext';
 //import CodeEditor from './CodeEditorTest';
 //import CodeEditor from './CodeEditorDocument';
 import CodeEditor from './CodeEditor';
+import Unauthorised from './Errors/Unauthorised';
 
 const DocumentEditorWrapper = () => {
 
@@ -33,15 +34,15 @@ const DocumentEditorWrapper = () => {
       }, [id, token]);
       
 
-    if (!doc) return <div>Loading...</div>
+    if (!doc) return <Unauthorised />
 
     switch (doc.type) {
         case 'Text':
-            return <QuillNewEditor />
+            return <QuillNewEditor doc={doc} />
         case 'MarkDown':
-            return <MarkdownEditor />
+            return <MarkdownEditor doc={doc} />
         case 'Code Editor':
-            return <CodeEditor />
+            return <CodeEditor doc={doc} />
         default:
             return <div>Unsupported document type</div>
     }

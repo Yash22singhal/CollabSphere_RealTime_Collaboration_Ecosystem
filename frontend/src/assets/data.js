@@ -1,8 +1,9 @@
 import user_icon from './images/user-icon.png';
 import doc_icon from './images/doc-icon.png';
 import new_doc from './images/new-doc.png';
-import md_doc from './images/md-doc.png'
-import code_editor from './images/code-editor.png'
+import md_doc from './images/md-doc.png';
+import code_editor from './images/code-editor.png';
+import error_icon from './images/error-icon.png';
 
 export const assets = {
   user_icon,
@@ -10,6 +11,7 @@ export const assets = {
   new_doc,
   md_doc,
   code_editor,
+  error_icon,
 }
 
 export const docTypes = [

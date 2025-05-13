@@ -12,12 +12,17 @@ import { io } from "socket.io-client";
 import { debounce, throttle } from "lodash";
 import AISideChat from "./AiSideChat";
 import { AppContext } from "../context/AppContext";
+//import DownloadToolbar from "./DownloadToolbar";
+// import DownloadPDFButton from "./DownloadToolbar";
+// import DownloadCode from "./DownloadToolbar";
+// import DownloadContent from "./DownloadToolbar";
+import DownloadToolbar from "./DownloadContent";
 
 const SAVE_INTERVAL_MS = 3000;
 const DEBOUNCE_DELAY = 100;
 const THROTTLE_INTERVAL = 200;
 
-function QuillNewEditor() {
+function QuillNewEditor( {doc} ) {
   const { url } = useContext(AppContext);
   const { id: documentId } = useParams();
   //const [content, setContent] = useState({ ops: [{ insert: "\n" }] });
@@ -86,29 +91,27 @@ function QuillNewEditor() {
     }
   }, []);
 
-
   const handleApplyAIResponse = (newText) => {
     if (!quillRef.current || !selectedText) return;
-  
+
     const editor = quillRef.current.getEditor?.();
-    if (!editor || typeof editor.insertText !== 'function') {
-      console.error('Quill editor instance not found or insertText is not a function');
+    if (!editor || typeof editor.insertText !== "function") {
+      console.error(
+        "Quill editor instance not found or insertText is not a function"
+      );
       return;
     }
-  
+
     const range = editor.getSelection();
     if (range) {
       editor.deleteText(range.index, range.length); // Remove selected text
-      editor.insertText(range.index, newText);      // Insert new text at same position
+      editor.insertText(range.index, newText); // Insert new text at same position
     } else {
       editor.insertText(editor.getLength() - 1, newText); // Append at end
     }
-  
-    setSelectedText('');
-  };
-  
 
-  
+    setSelectedText("");
+  };
 
   useEffect(() => {
     if (quillRef.current) {
@@ -246,7 +249,8 @@ function QuillNewEditor() {
 
   const themeClasses = {
     light: {
-      container: "h-full bg-[#fefefe] rounded-xl shadow-xl p-6 border border-gray-200 overflow-y-auto",
+      container:
+        "h-full bg-[#fefefe] rounded-xl shadow-xl p-6 border border-gray-200 overflow-y-auto",
       toolbar: "bg-[#f9f9f9] border-b border-gray-300",
       toolbarButton:
         "bg-white hover:bg-gray-100 text-gray-800 font-medium px-4 py-2 rounded-lg shadow-sm transition",
@@ -254,7 +258,8 @@ function QuillNewEditor() {
       closeButton: "text-gray-600 hover:text-gray-900 transition font-medium",
     },
     dark: {
-      container: "h-full bg-[#1e1e1e] rounded-xl shadow-xl p-6 border border-gray-700 overflow-y-auto ",
+      container:
+        "h-full bg-[#1e1e1e] rounded-xl shadow-xl p-6 border border-gray-700 overflow-y-auto ",
       toolbar: "bg-[#2a2a2a] border-b border-gray-600",
       toolbarButton:
         "bg-[#333] hover:bg-[#444] text-gray-100 font-medium px-4 py-2 rounded-lg shadow-sm transition",
@@ -286,10 +291,11 @@ function QuillNewEditor() {
     const handleBeforeUnload = (event) => {
       if (content) {
         event.preventDefault();
-        event.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+        event.returnValue =
+          "You have unsaved changes. Are you sure you want to leave?";
         saveDocument(content).then(() => {
           window.removeEventListener("beforeunload", handleBeforeUnload);
-           // No navigation here, just allow unload
+          // No navigation here, just allow unload
         });
       }
     };
@@ -310,7 +316,6 @@ function QuillNewEditor() {
       navigate(path);
     }
   };
-
 
   return (
     // <div className="min-h-screen mt-10 bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
@@ -365,58 +370,63 @@ function QuillNewEditor() {
     // </div>
 
     <div className="min-h-screen mt-10 bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
-  <div className="relative w-full flex flex-col lg:flex-row"> 
-    {/* Switch from flex-row to flex-col for mobile view */}
-    <div className="flex-1 mr-4 mb-6 lg:mb-0">
-      {/* Editor takes up most of the space */}
-      <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
-        <div className="flex justify-between items-center mb-4">
-          <button
-            onClick={() => handleNavigate("/dashboard")}
-            className={themeClasses[theme].closeButton}
-          >
-            ⬅ Back to Dashboard
-          </button>
-          <button
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-            className={themeClasses[theme].toolbarButton}
-          >
-            {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-          </button>
+        <DownloadToolbar content={content} type="html" fileName={doc.title} />
+      <div className="relative w-full flex flex-col lg:flex-row">
+        {/* <DownloadToolbar editorType='quill' content={content} />  */}
+        {/* <DownloadPDFButton content={content} editorType='text' /> */}
+        {/* <DownloadCode content={content} contentType="html" /> */}
+        {/* <DownloadContent content={content} contentType="html" type='html' /> */}
+        {/* Switch from flex-row to flex-col for mobile view */}
+        <div className="flex-1 mr-4 mb-6 lg:mb-0">
+          {/* Editor takes up most of the space */}
+          <div className={`pb-20 mb-8 ${themeClasses[theme].container}`}>
+            <div className="flex justify-between items-center mb-4">
+              <button
+                onClick={() => handleNavigate("/dashboard")}
+                className={themeClasses[theme].closeButton}
+              >
+                ⬅ Back to Dashboard
+              </button>
+              <button
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                className={themeClasses[theme].toolbarButton}
+              >
+                {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+              </button>
+            </div>
+
+            <ReactQuill
+              ref={quillRef}
+              theme="snow"
+              value={content}
+              onChange={handleChange}
+              modules={modules}
+              formats={formats}
+              className={`${themeClasses[theme].editor}`}
+              onSelectionChange={handleTextSelection} // Listen for selection changes
+            />
+          </div>
         </div>
 
-        <ReactQuill
-          ref={quillRef}
-          theme="snow"
-          value={content}
-          onChange={handleChange}
-          modules={modules}
-          formats={formats}
-          className={`${themeClasses[theme].editor}`}
-          onSelectionChange={handleTextSelection} // Listen for selection changes
-        />
+        {isAISideChatOpen && (
+          <div className="w-full lg:w-[300px] mt-6 lg:mt-0">
+            {/* Ensure the AI chat is responsive */}
+            <AISideChat
+              selectedText={selectedText}
+              onApply={handleApplyAIResponse}
+              setIsAISideChatOpen={setIsAISideChatOpen}
+            />
+          </div>
+        )}
       </div>
+
+      {documentId && (
+        <p className="text-sm text-right text-gray-500 mt-2 italic">
+          Document ID: <span className="font-mono">{documentId}</span>
+          {isSaving && <span className="ml-4">Saving...</span>}
+        </p>
+      )}
     </div>
-
-    {isAISideChatOpen && (
-      <div className="w-full lg:w-[300px] mt-6 lg:mt-0">
-        {/* Ensure the AI chat is responsive */}
-        <AISideChat
-          selectedText={selectedText}
-          onApply={handleApplyAIResponse}
-          setIsAISideChatOpen={setIsAISideChatOpen}
-        />
-      </div>
-    )}
-  </div>
-
-  {documentId && (
-    <p className="text-sm text-right text-gray-500 mt-2 italic">
-      Document ID: <span className="font-mono">{documentId}</span>
-      {isSaving && <span className="ml-4">Saving...</span>}
-    </p>
-  )}
-</div>
   );
 }
 

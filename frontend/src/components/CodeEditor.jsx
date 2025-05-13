@@ -5,10 +5,11 @@ import { io } from "socket.io-client";
 import { AppContext } from "../context/AppContext";
 import AISideChat from "./AiSideChat";
 import axios from "axios";
+import DownloadToolbar from "./DownloadContent";
 
 const SAVE_INTERVAL_MS = 3000;
 
-const CodeEditor = () => {
+const CodeEditor = ( {doc} ) => {
   const { id: documentId } = useParams();
   const { url, token } = useContext(AppContext);
   const [code, setCode] = useState("// Start coding here...");
@@ -164,6 +165,15 @@ const CodeEditor = () => {
             <div className="absolute top-1/2 right-3 transform -translate-y-1/2 pointer-events-none text-gray-400">
               ▼
             </div>
+          </div>
+
+          <div>
+          {/* <DownloadToolbar content={editorRef.current?.getValue() || ""} /> */}
+          {/* <DownloadToolbar editorType='code' content={editorRef.current?.getValue() || ""} /> */}
+          {/* <DownloadPDFButton content={code} editorType='code' /> */}
+          {/* <DownloadCode content={code} contentType="code" /> */}
+          {/* <DownloadContent content={code} contentType="code" /> */}
+          <DownloadToolbar content={code} type="code" fileName={doc.title} language={language} />
           </div>
         </div>
 

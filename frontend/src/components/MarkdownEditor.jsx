@@ -11,10 +11,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import AISideChat from "./AiSideChat";
 import { AppContext } from "../context/AppContext";
+// import DownloadToolbar from "./DownloadToolbar";
+// import DownloadContent from "./DownloadToolbar";
+import DownloadToolbar from "./DownloadContent";
 
 const SAVE_INTERVAL_MS = 3000;
 
-function MarkdownEditor() {
+function MarkdownEditor( {doc} ) {
   const { url } = useContext(AppContext);
   const { id: documentId } = useParams();
   const [content, setContent] = useState("");
@@ -141,6 +144,10 @@ function MarkdownEditor() {
             >
               ⬅ Back to Dashboard
             </button>
+            {/* <DownloadToolbar editorType='markdown' content={content} /> */}
+            {/* <DownloadContent content={content} contentType="html" /> */}
+            {/* <DownloadToolbar content={content} type='html' /> */}
+            <DownloadToolbar content={content} type="markdown" fileName={doc.title} />
           </div>
           <textarea
             ref={textareaRef}
