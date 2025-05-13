@@ -17,6 +17,8 @@ import { AppContext } from "../context/AppContext";
 // import DownloadCode from "./DownloadToolbar";
 // import DownloadContent from "./DownloadToolbar";
 import DownloadToolbar from "./DownloadContent";
+import ShareButton from "./ShareButton";
+import ScrollToTopButton from './ScrollToTopButton'
 
 const SAVE_INTERVAL_MS = 3000;
 const DEBOUNCE_DELAY = 100;
@@ -370,7 +372,6 @@ function QuillNewEditor( {doc} ) {
     // </div>
 
     <div className="min-h-screen mt-10 bg-gradient-to-b from-[#ece9e6] to-[#ffffff] dark:from-[#111] dark:to-gray-900 transition-all duration-300 py-12 px-4">
-        <DownloadToolbar content={content} type="html" fileName={doc.title} />
       <div className="relative w-full flex flex-col lg:flex-row">
         {/* <DownloadToolbar editorType='quill' content={content} />  */}
         {/* <DownloadPDFButton content={content} editorType='text' /> */}
@@ -387,12 +388,21 @@ function QuillNewEditor( {doc} ) {
               >
                 ⬅ Back to Dashboard
               </button>
-              <button
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className={themeClasses[theme].toolbarButton}
-              >
-                {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-              </button>
+              <div className="flex gap-5">
+                <DownloadToolbar
+                  content={content}
+                  type="html"
+                  fileName={doc.title}
+                  className={themeClasses[theme].toolbarButton}
+                />
+                <button
+                  onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                  className={themeClasses[theme].toolbarButton}
+                >
+                  {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+                </button>
+                <ShareButton url={window.location.href} />
+              </div>
             </div>
 
             <ReactQuill
@@ -426,6 +436,7 @@ function QuillNewEditor( {doc} ) {
           {isSaving && <span className="ml-4">Saving...</span>}
         </p>
       )}
+      <ScrollToTopButton />
     </div>
   );
 }

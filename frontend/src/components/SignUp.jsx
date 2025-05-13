@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
+import ScrollToTopButton from './ScrollToTopButton';
 
 function Signup() {
   const navigate = useNavigate();
@@ -153,6 +154,7 @@ function Signup() {
           </div>
         </form>
       </div>
+      <ScrollToTopButton />
     </div>
   );
 }

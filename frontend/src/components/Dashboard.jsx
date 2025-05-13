@@ -6,6 +6,8 @@ import { faCircleUser, faL } from "@fortawesome/free-solid-svg-icons";
 import DocumentCard from "./DocumentCard";
 import { assets } from "../assets/data";
 import { docTypes } from "../assets/data";
+import { motion, AnimatePresence } from "framer-motion";
+import ScrollToTopButton from "./ScrollToTopButton";
 
 function Dashboard() {
   const [ownedDocuments, setOwnedDocuments] = useState([]);
@@ -16,7 +18,7 @@ function Dashboard() {
   const { url, token, user } = useContext(AppContext);
   const [isCreateDoc, setIsCreateDoc] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [typeOfDoc, setTypeOfDoc] = useState('');
+  const [typeOfDoc, setTypeOfDoc] = useState("");
   //const url = "https://collabsphere-realtime-collaboration.onrender.com"
 
   useEffect(() => {
@@ -55,7 +57,7 @@ function Dashboard() {
 
   const handleCreateNewDocument = async () => {
     console.log(typeOfDoc);
-    
+
     setIsModalVisible(false);
     setError("");
     setMessage("");
@@ -124,37 +126,36 @@ function Dashboard() {
         //   </div>
         // </div>
         <div className="absolute z-[1] w-full h-full bg-black/60 grid">
-  <div className="place-self-center w-[min(100%,23vw)] sm:w-[min(100%,30vw)] lg:w-[min(100%,40vw)] min-w-[330px] text-gray-500 bg-white flex flex-col gap-6 p-6 rounded-lg text-sm animate-fadeIn">
-    <div className="flex justify-between items-center">
-      <h2 className="text-2xl font-semibold mb-4">
-        📄 Create New {typeOfDoc} Document
-      </h2>
-      <button
-        className="cursor-pointer text-xl font-extrabold text-gray-500 hover:text-gray-700"
-        onClick={() => setIsModalVisible(false)}
-        aria-label="Close"
-      >
-        ✕
-      </button>
-    </div>
-    <div className="flex flex-col sm:flex-row gap-4">
-      <input
-        type="text"
-        className="flex-grow px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/10 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="Enter new document title..."
-        value={newDocumentTitle}
-        onChange={(e) => setNewDocumentTitle(e.target.value)}
-      />
-      <button
-        onClick={() => handleCreateNewDocument(typeOfDoc)}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition"
-      >
-        ➕ Create
-      </button>
-    </div>
-  </div>
-</div>
-
+          <div className="place-self-center w-[min(100%,23vw)] sm:w-[min(100%,30vw)] lg:w-[min(100%,40vw)] min-w-[330px] text-gray-500 bg-white flex flex-col gap-6 p-6 rounded-lg text-sm animate-fadeIn">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold mb-4">
+                📄 Create New {typeOfDoc} Document
+              </h2>
+              <button
+                className="cursor-pointer text-xl font-extrabold text-gray-500 hover:text-gray-700"
+                onClick={() => setIsModalVisible(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <input
+                type="text"
+                className="flex-grow px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/10 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="Enter new document title..."
+                value={newDocumentTitle}
+                onChange={(e) => setNewDocumentTitle(e.target.value)}
+              />
+              <button
+                onClick={() => handleCreateNewDocument(typeOfDoc)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition"
+              >
+                ➕ Create
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       <div className="min-h-screen mt-16 bg-gradient-to-br from-[#2E8BC0] via-[#0C2D48] to-gray-900 text-white transition-all duration-500">
         <div className="max-w-5xl mx-auto px-6 py-14">
@@ -212,7 +213,9 @@ function Dashboard() {
               </button>
             </div>
           </div> */}
-          <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-lg mb-8">
+
+          {/* Create New Doc */}
+          {/* <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-lg mb-8">
             <h2 className="text-2xl font-semibold mb-4">
               📄 Create New Document
             </h2>
@@ -240,6 +243,56 @@ function Dashboard() {
               ) : (
                 <></>
               )}
+            </div>
+          </div> */}
+
+          <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-lg mb-8">
+            <h2 className="text-2xl font-semibold mb-4 text-center sm:text-left">
+              📄 Create New Document
+            </h2>
+
+            <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+              {/* Create Button */}
+              <div
+                className="flex flex-col items-center justify-center bg-white/10 py-3 px-6 rounded-2xl border border-white/20 shadow-lg cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => setIsCreateDoc((prev) => !prev)}
+              >
+                <img
+                  src={assets.new_doc}
+                  alt="new_doc"
+                  className="w-12 sm:w-16"
+                />
+                <p className="text-base sm:text-lg font-semibold">Create</p>
+                <p className="text-base sm:text-lg font-semibold">Document</p>
+              </div>
+
+              {/* Animated Document Type Cards */}
+              <AnimatePresence>
+                {isCreateDoc &&
+                  docTypes.map((type, id) => (
+                    <motion.div
+                      key={id}
+                      initial={{ x: 50, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ x: 50, opacity: 0 }}
+                      transition={{ duration: 0.3, delay: id * 0.1 }}
+                      className="flex flex-col items-center justify-center bg-white/10 py-3 px-6 rounded-2xl border border-white/20 shadow-lg cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => handleCreateDoc(type.type)}
+                    >
+                      <img
+                        src={type.logo}
+                        alt={type.type}
+                        className="w-12 sm:w-16"
+                      />
+                      <p className="text-base sm:text-lg font-semibold">
+                        {type.type}
+                      </p>
+                      <p className="text-base sm:text-lg font-semibold">
+                        Document
+                      </p>
+                    </motion.div>
+                  ))}
+              </AnimatePresence>
             </div>
           </div>
 
@@ -287,6 +340,7 @@ function Dashboard() {
             </div>
           )}
         </div>
+        <ScrollToTopButton />
       </div>
     </>
   );

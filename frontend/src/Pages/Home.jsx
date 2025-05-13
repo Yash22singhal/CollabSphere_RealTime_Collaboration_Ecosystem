@@ -3,6 +3,7 @@ import Hero from '../components/Hero'
 import Features from '../components/Features'
 import DemoSection from '../components/DemoSection'
 import TestimonialsSection from '../components/TestimonialSection'
+import ScrollToTopButton from '../components/ScrollToTopButton'
 
 const Home = () => {
   return (
@@ -14,6 +15,8 @@ const Home = () => {
         <DemoSection />
 
         <TestimonialsSection />
+
+        <ScrollToTopButton />
     </div>
   )
 }
