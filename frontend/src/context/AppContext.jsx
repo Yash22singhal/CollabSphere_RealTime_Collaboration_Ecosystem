@@ -2,7 +2,7 @@ import { createContext, useEffect, useId, useState } from "react";
 
 export const AppContext = createContext(null);
 
-const AppContextProvider = (props) => {
+export const AppContextProvider = (props) => {
     //const url = "http://localhost:5000"
     const url = "https://collabsphere-realtime-collaboration.onrender.com";
     const [token, setToken] = useState("");
@@ -52,5 +52,3 @@ const AppContextProvider = (props) => {
         </AppContext.Provider>
     );
 };
-
-export default AppContextProvider;
