@@ -11,8 +11,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import AISideChat from "./AiSideChat";
 import { AppContext } from "../context/AppContext";
-// import DownloadToolbar from "./DownloadToolbar";
-// import DownloadContent from "./DownloadToolbar";
 import DownloadToolbar from "./DownloadContent";
 import ShareButton from "./ShareButton";
 import ScrollToTopButton from "./ScrollToTopButton";
@@ -136,67 +134,8 @@ function MarkdownEditor( {doc} ) {
   };
 
   return (
-    // <div className="min-h-screen p-6 mt-16 bg-gray-100 dark:bg-[#1a1a1a] text-black dark:text-white transition">
-    //   <div className="flex flex-col lg:flex-row gap-6">
-    //     <div className="flex-1">
-    //       <div className="flex justify-between mb-4">
-    //         <button
-    //           onClick={() => handleNavigate("/dashboard")}
-    //           className="text-blue-500 dark:text-blue-400"
-    //         >
-    //           ⬅ Back to Dashboard
-    //         </button>
-    //         {/* <DownloadToolbar editorType='markdown' content={content} /> */}
-    //         {/* <DownloadContent content={content} contentType="html" /> */}
-    //         {/* <DownloadToolbar content={content} type='html' /> */}
-    //         <DownloadToolbar content={content} type="markdown" fileName={doc.title} />
-    //       </div>
-    //       <textarea
-    //         ref={textareaRef}
-    //         value={content}
-    //         onChange={(e) => {
-    //           const newContent = e.target.value;
-    //           setContent(newContent);
-    //           const userId = localStorage.getItem("userId") || "guest";
-    //           socketRef.current?.emit(
-    //             "text-change",
-    //             documentId,
-    //             userId,
-    //             newContent
-    //           );
-    //         }}
-    //         onMouseUp={handleSelection}
-    //         onKeyUp={handleSelection}
-    //         className="w-full h-64 p-4 rounded shadow resize-none bg-white dark:bg-[#121212] text-black dark:text-white "
-    //         placeholder="Write your markdown here..."
-    //       />
-    //       <div className="markdown-body bg-white dark:bg-[#121212] mt-6 p-4 rounded max-h-screen overflow-auto">
-    //         <h3>Preview</h3>
-    //         <div dangerouslySetInnerHTML={{ __html: markdownPreview }} />
-    //       </div>
-    //     </div>
-    //     {isAISideChatOpen && (
-    //       <div className="w-full lg:w-[300px]">
-    //         <AISideChat
-    //           selectedText={selectedText}
-    //           onApply={handleApplyAIResponse}
-    //           setIsAISideChatOpen={setIsAISideChatOpen}
-    //         />
-    //       </div>
-    //     )}
-    //   </div>
-    //   {documentId && (
-    //     <p className="text-sm text-right text-gray-500 mt-2 italic">
-    //       Document ID: <span className="font-mono">{documentId}</span>
-    //       {isSaving && <span className="ml-4">Saving...</span>}
-    //     </p>
-    //   )}
-    // </div>
-
-
-    <div className="min-h-screen px-4 sm:px-6 md:px-8 py-6 mt-16 bg-gray-100 dark:bg-[#1a1a1a] text-black dark:text-white transition">
+        <div className="min-h-screen px-4 sm:px-6 md:px-8 py-6 mt-16 bg-gray-100 dark:bg-[#1a1a1a] text-black dark:text-white transition">
   <div className="flex flex-col lg:flex-row gap-6">
-    
     {/* Left Section (Editor + Preview) */}
     <div className="flex-1 w-full">
       
@@ -213,7 +152,6 @@ function MarkdownEditor( {doc} ) {
         <ShareButton url={window.location.href} />
         </div>
       </div>
-
       {/* Markdown Editor */}
       <textarea
         ref={textareaRef}
@@ -229,14 +167,12 @@ function MarkdownEditor( {doc} ) {
         className="w-full min-h-[200px] sm:h-64 p-4 rounded-lg shadow-sm resize-y bg-white dark:bg-[#121212] text-black dark:text-white border border-gray-300 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Write your markdown here..."
       />
-
       {/* Preview */}
       <div className="markdown-body bg-white dark:bg-[#121212] mt-6 p-4 rounded-lg max-h-[70vh] overflow-auto border border-gray-200 dark:border-white/10">
         <h3 className="text-xl font-semibold mb-2">Preview</h3>
         <div dangerouslySetInnerHTML={{ __html: markdownPreview }} />
       </div>
     </div>
-
     {/* Right Section (AI Side Chat) */}
     {isAISideChatOpen && (
       <div className="w-full lg:max-w-sm">
@@ -248,7 +184,6 @@ function MarkdownEditor( {doc} ) {
       </div>
     )}
   </div>
-
   {/* Document ID */}
   {documentId && (
     <p className="text-sm text-right text-gray-500 mt-4 italic">
@@ -257,9 +192,5 @@ function MarkdownEditor( {doc} ) {
     </p>
   )}
   <ScrollToTopButton />
-</div>
-
-  );
-}
-
+</div>);}
 export default MarkdownEditor;

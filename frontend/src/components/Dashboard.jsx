@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser, faL } from "@fortawesome/free-solid-svg-icons";
 import DocumentCard from "./DocumentCard";
 import { assets } from "../assets/data";
 import { docTypes } from "../assets/data";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollToTopButton from "./ScrollToTopButton";
+import LoginPrompt from "./Errors/LoginPopup";
+import Loading from "./Loading";
 
 function Dashboard() {
   const [ownedDocuments, setOwnedDocuments] = useState([]);
@@ -15,17 +15,20 @@ function Dashboard() {
   const [newDocumentTitle, setNewDocumentTitle] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const { url, token, user } = useContext(AppContext);
+  const { url, token, user, isAuthenticated } = useContext(AppContext);
   const [isCreateDoc, setIsCreateDoc] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [typeOfDoc, setTypeOfDoc] = useState("");
-  //const url = "https://collabsphere-realtime-collaboration.onrender.com"
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+        //const token = localStorage.getItem("token");
+        if (!token || !isAuthenticated()){
+          setIsLoading(false);
+          return;
+        }; // Wait until token is available
 
         const [ownedRes, collabRes] = await Promise.all([
           fetch(`${url}/api/documents/user/documents`, {
@@ -50,14 +53,15 @@ function Dashboard() {
         console.error(err);
         setError("An unexpected error occurred while fetching documents.");
       }
+      finally{
+        setIsLoading(false);
+      }
     };
 
     fetchDocuments();
-  }, []);
+  }, [token, url, isAuthenticated]);
 
   const handleCreateNewDocument = async () => {
-    console.log(typeOfDoc);
-
     setIsModalVisible(false);
     setError("");
     setMessage("");
@@ -68,8 +72,10 @@ function Dashboard() {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token || !isAuthenticated()){
+          setIsLoading(false);
+          return;
+        }; // Wait until token is available
 
       const response = await fetch(`${url}/api/documents/`, {
         method: "POST",
@@ -100,31 +106,19 @@ function Dashboard() {
     setIsModalVisible(true);
   };
 
+  if (!isAuthenticated()){
+    return (
+      <LoginPrompt />
+    );
+  }
+
+  if (isLoading){
+    return <Loading />
+  }
+
   return (
     <>
       {isModalVisible && (
-        // <div className="absolute z-[1] w-full h-full bg-black/60 grid">
-        //   <div className="place-self-center w-[min(100%,_23vw)] min-w-[330px] text-gray-500 bg-white flex flex-col gap-[25px] p-[25px_30px] rounded-[8px] text-[14px] animate-fadeIn">
-        //     <h2 className="text-2xl font-semibold mb-4">
-        //       📄 Create New Document
-        //     </h2>
-        //     <div className="flex flex-col sm:flex-row gap-4">
-        //       <input
-        //         type="text"
-        //         className="flex-grow px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        //         placeholder="Enter new document title..."
-        //         value={newDocumentTitle}
-        //         onChange={(e) => setNewDocumentTitle(e.target.value)}
-        //       />
-        //       <button
-        //         onClick={handleCreateNewDocument}
-        //         className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition"
-        //       >
-        //         ➕ Create
-        //       </button>
-        //     </div>
-        //   </div>
-        // </div>
         <div className="absolute z-[1] w-full h-full bg-black/60 grid">
           <div className="place-self-center w-[min(100%,23vw)] sm:w-[min(100%,30vw)] lg:w-[min(100%,40vw)] min-w-[330px] text-gray-500 bg-white flex flex-col gap-6 p-6 rounded-lg text-sm animate-fadeIn">
             <div className="flex justify-between items-center">
@@ -148,7 +142,7 @@ function Dashboard() {
                 onChange={(e) => setNewDocumentTitle(e.target.value)}
               />
               <button
-                onClick={() => handleCreateNewDocument(typeOfDoc)}
+                onClick={() => handleCreateNewDocument()}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition"
               >
                 ➕ Create
@@ -193,59 +187,6 @@ function Dashboard() {
               ✅ {message}
             </div>
           )}
-
-          {/* Create new document */}
-          {/* <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-lg mb-8">
-            <h2 className="text-2xl font-semibold mb-4">📄 Create New Document</h2>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <input
-                type="text"
-                className="flex-grow px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter new document title..."
-                value={newDocumentTitle}
-                onChange={(e) => setNewDocumentTitle(e.target.value)}
-              />
-              <button
-                onClick={handleCreateNewDocument}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition"
-              >
-                ➕ Create
-              </button>
-            </div>
-          </div> */}
-
-          {/* Create New Doc */}
-          {/* <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-lg mb-8">
-            <h2 className="text-2xl font-semibold mb-4">
-              📄 Create New Document
-            </h2>
-            <div className="flex flex-row gap-4">
-              <div
-                className="flex flex-col items-center justify-center bg-white/10 py-2 px-5 rounded-2xl border border-white/20 shadow-lg cursor-pointer"
-                onClick={() => setIsCreateDoc(!isCreateDoc)}
-              >
-                <img src={assets.new_doc} alt="" className="w-16" />
-                <p className="text-lg font-semibold ">Create</p>
-                <p className="text-lg font-semibold ">Document</p>
-              </div>
-              {isCreateDoc ? (
-                docTypes.map((type, id) => (
-                  <div
-                    key={id}
-                    className="flex flex-col items-center justify-center bg-white/10 py-2 px-5 rounded-2xl border border-white/20 shadow-lg cursor-pointer"
-                    onClick={() => handleCreateDoc(type.type)}
-                  >
-                    <img src={type.logo} alt="" className="w-16" />
-                    <p className="text-lg font-semibold ">{type.type}</p>
-                    <p className="text-lg font-semibold ">Document</p>
-                  </div>
-                ))
-              ) : (
-                <></>
-              )}
-            </div>
-          </div> */}
-
           <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-lg mb-8">
             <h2 className="text-2xl font-semibold mb-4 text-center sm:text-left">
               📄 Create New Document
@@ -271,7 +212,7 @@ function Dashboard() {
                 {isCreateDoc &&
                   docTypes.map((type, id) => (
                     <motion.div
-                      key={id}
+                      key={type.type}
                       initial={{ x: 50, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       exit={{ x: 50, opacity: 0 }}

@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import ScrollToTopButton from './ScrollToTopButton';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function Signup() {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ function Signup() {
   const [data, setData] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
@@ -101,9 +104,9 @@ function Signup() {
             />
           </div>
 
-          <div>
+          <div className='relative'>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
               value={data.password}
@@ -111,6 +114,7 @@ function Signup() {
               className="w-full bg-gray-100 text-gray-800 px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
               required
             />
+            <FontAwesomeIcon className='absolute right-3 top-[50%] translate-y-[-50%] cursor-pointer text-gray-600' onClick={() => setShowPassword(!showPassword)}  icon={showPassword ? faEyeSlash : faEye} />
           </div>
 
           <div className="flex items-center text-sm text-gray-600">

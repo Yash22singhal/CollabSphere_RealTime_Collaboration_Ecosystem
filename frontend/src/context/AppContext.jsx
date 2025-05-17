@@ -1,10 +1,10 @@
-import { createContext, useEffect, useId, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const AppContext = createContext(null);
 
 export const AppContextProvider = (props) => {
-    //const url = "http://localhost:5000"
-    const url = "https://collabsphere-realtime-collaboration.onrender.com";
+    const url = "http://localhost:5000"
+    //const url = "https://collabsphere-realtime-collaboration.onrender.com";
     const [token, setToken] = useState("");
     const [user, setUser] = useState({});
 
@@ -29,6 +29,19 @@ export const AppContextProvider = (props) => {
         }
     }
 
+    const isAuthenticated = () => {
+      const token = localStorage.getItem("token");
+      if (!token) return false;
+      try {
+        
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        return payload.exp > currentTime;
+      } catch (err) {
+        return false;
+      }
+    };
+
     useEffect(()=>{
         async function loadData(){
             if (localStorage.getItem('token')){
@@ -36,6 +49,7 @@ export const AppContextProvider = (props) => {
             }
             await fetchUser(localStorage.getItem('token'))
         }
+        isAuthenticated();
         loadData();
     }, [])
 
@@ -43,7 +57,8 @@ export const AppContextProvider = (props) => {
         url,
         token,
         setToken,
-        user
+        user,
+        isAuthenticated,
       };
 
     return (

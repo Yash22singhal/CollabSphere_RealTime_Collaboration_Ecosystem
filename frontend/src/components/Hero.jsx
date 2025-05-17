@@ -26,15 +26,15 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <a href="/">
+              <a href="/signup">
                 <button className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl shadow hover:bg-gray-100 transition duration-200">
                   Get Started Free
                 </button>
               </a>
-              <button className="px-6 py-3 bg-transparent border border-white text-white font-semibold rounded-xl hover:bg-white/10 transition duration-200 flex items-center">
+              <a href="#demo" className="px-6 py-3 bg-transparent border border-white text-white font-semibold rounded-xl hover:bg-white/10 transition duration-200 flex items-center">
                 <i className="fas fa-play-circle mr-2 text-xl"></i>
                 Watch Demo
-              </button>
+              </a>
             </div>
           </motion.div>
 

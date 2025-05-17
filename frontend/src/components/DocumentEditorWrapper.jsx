@@ -8,34 +8,51 @@ import { AppContext } from '../context/AppContext';
 //import CodeEditor from './CodeEditorDocument';
 import CodeEditor from './CodeEditor';
 import Unauthorised from './Errors/Unauthorised';
+import ErrorPage from './Errors/ErrorPage';
+import Loading from './Loading';
 
 const DocumentEditorWrapper = () => {
 
     const {id} = useParams();
     const [doc, setDoc] = useState(null);
-    const {url, token} = useContext(AppContext);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const {url, token, isAuthenticated} = useContext(AppContext);
 
 
     useEffect(() => {
-        if (!token) return; // Wait until token is available
+        if (!token || !isAuthenticated()){
+          setLoading(false);
+          setError('Unauthorized');
+          return;
+        }; // Wait until token is available
+
+        setLoading(true);
+        setError(null);
       
         fetch(`${url}/api/documents/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
           .then((res) => {
-            if (!res.ok) throw new Error('Unauthorized');
+            if (!res.ok){
+              if (res.status === 401 ) throw new Error('Unauthorized');
+              throw new Error('Fetch error');
+            } 
             return res.json();
           })
           .then((data) => setDoc(data))
           .catch((err) => {
             console.error(err);
-            // optionally redirect to login or show error
-          });
+            setError(error.message);
+          })
+          .finally(() => setLoading(false));
       }, [id, token]);
       
-
-    if (!doc) return <Unauthorised />
-
+    
+    if (loading) return <Loading message='loading document...'/>
+    if (error === 'Unauthorized') return <Unauthorised />
+    if (error)  return <ErrorPage code='Error' message={error} />
+    if (!doc) return <ErrorPage code="404" message='Document Not Found.' />
     switch (doc.type) {
         case 'Text':
             return <QuillNewEditor doc={doc} />

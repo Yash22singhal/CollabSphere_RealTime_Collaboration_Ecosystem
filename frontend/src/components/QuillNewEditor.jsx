@@ -15,10 +15,6 @@ import { io } from "socket.io-client";
 import { debounce, throttle } from "lodash";
 import AISideChat from "./AiSideChat";
 import { AppContext } from "../context/AppContext";
-//import DownloadToolbar from "./DownloadToolbar";
-// import DownloadPDFButton from "./DownloadToolbar";
-// import DownloadCode from "./DownloadToolbar";
-// import DownloadContent from "./DownloadToolbar";
 import DownloadToolbar from "./DownloadContent";
 import ShareButton from "./ShareButton";
 import ScrollToTopButton from "./ScrollToTopButton";
@@ -30,7 +26,6 @@ const THROTTLE_INTERVAL = 200;
 function QuillNewEditor({ doc }) {
   const { url } = useContext(AppContext);
   const { id: documentId } = useParams();
-  //const [content, setContent] = useState({ ops: [{ insert: "\n" }] });
   const [content, setContent] = useState("");
   const quillRef = useRef(null);
   const socketRef = useRef(null);
@@ -351,47 +346,6 @@ function QuillNewEditor({ doc }) {
                 </button>
                 <ShareButton url={window.location.href} />
               </div>
-
-              {/* <div className="relative md:hidden">
-              
-              <button
-                className="md:hidden text-gray-600 text-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} />
-              </button>
-
-              <AnimatePresence>
-                {isMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="md:hidden bg-white z-40 border-b border-gray-200 shadow"
-                  >
-                    <div className="flex flex-col items-center justify-center px-4 py-4 space-y-3">
-                      <DownloadToolbar
-                        content={content}
-                        type="html"
-                        fileName={doc.title}
-                        className={themeClasses[theme].toolbarButton}
-                      />
-                      <button
-                        onClick={() =>
-                          setTheme(theme === "light" ? "dark" : "light")
-                        }
-                        className={themeClasses[theme].toolbarButton}
-                      >
-                        {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-                      </button>
-                      <ShareButton url={window.location.href} />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              </div> */}
-
               <div className="relative md:hidden">
                 {/* Mobile Menu Toggle */}
                 <button

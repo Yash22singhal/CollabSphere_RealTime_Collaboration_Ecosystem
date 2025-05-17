@@ -52,12 +52,6 @@ const DemoSection = () => {
                 />
               ))}
             </div>
-            <div className="mt-8 flex justify-center">
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer whitespace-nowrap">
-                <i className="fas fa-play-circle mr-2"></i>
-                Watch Full Demo
-              </button>
-            </div>
           </div>
         </div>
       </div>
